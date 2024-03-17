@@ -1,18 +1,5 @@
-# Use a imagem base do Ubuntu 22.04 fornecida pela Microsoft
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
+# Use a imagem do Mysterium Network
+FROM mysteriumnetwork/myst
 
-# Atualize o sistema e instale o docker.io
-RUN apt-get update && \
-    apt-get install -y docker.io
-
-# Copie o script de inicialização para o contêiner
-COPY start.sh /usr/local/bin/start.sh
-
-# Tornar o script executável
-RUN chmod +x /usr/local/bin/start.sh
-
-# Exponha a porta 4449
-EXPOSE 4449
-
-# Defina o comando de entrada (ENTRYPOINT) para o script de inicialização
-ENTRYPOINT ["/usr/local/bin/start.sh"]
+# Adicione a capacidade NET_ADMIN
+RUN docker run --cap-add NET_ADMIN -d -p 4449:4449 --name myst -v myst-data:/var/lib/mysterium-node --restart unless-stopped mysteriumnetwork/myst:latest service --agreed-terms-and-conditions
