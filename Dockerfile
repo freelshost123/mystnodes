@@ -5,6 +5,14 @@ FROM mcr.microsoft.com/devcontainers/base:ubuntu-22.04
 RUN apt-get update && \
     apt-get install -y docker.io
 
-# Define o comando de entrada (ENTRYPOINT)
-ENTRYPOINT ["/bin/bash", "-c", "docker pull mysteriumnetwork/myst && \
-    docker run --cap-add NET_ADMIN -d -p 4449:4449 --name myst -v myst-data:/var/lib/mysterium-node --restart unless-stopped mysteriumnetwork/myst:latest service --agreed-terms-and-conditions"]
+# Copie o script de inicialização para o contêiner
+COPY start.sh /usr/local/bin/start.sh
+
+# Tornar o script executável
+RUN chmod +x /usr/local/bin/start.sh
+
+# Exponha a porta 4449
+EXPOSE 4449
+
+# Defina o comando de entrada (ENTRYPOINT) para o script de inicialização
+ENTRYPOINT ["/usr/local/bin/start.sh"]
